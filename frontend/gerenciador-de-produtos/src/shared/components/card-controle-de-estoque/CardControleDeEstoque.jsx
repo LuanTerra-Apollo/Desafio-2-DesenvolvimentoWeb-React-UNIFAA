@@ -1,5 +1,5 @@
 import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Typography } from "@mui/material"
-import {ModalAdicionarEditar} from "../modal-adicionar-editar/ModalAdicionarEditar";
+import { ModalAdicionarEditar } from "../modal-adicionar-editar/ModalAdicionarEditar";
 import { useEffect, useState } from "react";
 import { ProdutosService } from "../../services/api";
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,29 +9,51 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export const CardControleDeEstoque = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingProduct, setEditingProduct] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [rows, setRows] = useState([])
-    
+
 
     useEffect(() => {
-        setIsLoading(true)
-        ProdutosService.obterProdutosDaAPI().then((response) => {
+        setIsLoading(true);
+        handleAtualizarProdutosNaTabela();
+    }, []);
+
+    useEffect(() => {
+        console.log(isEditing)
+    }, [isEditing])
+
+    const handleClickAdicionar = () => {
+        setIsEditing(false)
+        setIsOpen(true)
+    }
+
+    const handleClickEditar = (produto) => {
+        setIsEditing(true)
+        setIsOpen(true)
+        setEditingProduct(produto)
+    }
+
+    const handleClickDeletar = (id) => {
+        setIsLoading(true);
+        ProdutosService.deletarProdutoNaAPI(id).then((response) => {
             if (response instanceof Error) {
                 alert(result.message);
             } else {
                 setIsLoading(false);
-                setRows(response.data)
+                handleAtualizarProdutosNaTabela()
             }
         })
-    }, []);
-
-    const handleClickOpen = () => {
-        setIsOpen(true);
     }
-    
+
     const handleClose = () => {
         setIsOpen(false);
-        setIsLoading(true)
+        setIsLoading(true);
+        handleAtualizarProdutosNaTabela();
+    }
+
+    const handleAtualizarProdutosNaTabela = () => {
         ProdutosService.obterProdutosDaAPI().then((response) => {
             if (response instanceof Error) {
                 alert(result.message);
@@ -49,15 +71,15 @@ export const CardControleDeEstoque = () => {
                 <Typography variant="h1" fontWeight='bold' sx={{ fontSize: '24px', textAlign: 'center' }}>
                     Controle de Estoque
                 </Typography>
-                <Button onClick={handleClickOpen} color='secondary' variant="contained" sx={{ color: 'black' }}>Adicionar</Button>
+                <Button onClick={handleClickAdicionar} color='secondary' variant="contained" sx={{ color: 'black' }}>Adicionar</Button>
             </Box>
             <Paper sx={{
-                display: 'flex', flexDirection: 'column', justifyContent:'center', width: '80%', maxWidth: '80%', height: '80%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
+                display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '80%', maxWidth: '80%', height: '80%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
                 borderRadius: '5px',
                 backgroundColor: '#4D3B00'
             }} elevation={3}>
 
-                <TableContainer sx={{width: '80%', alignSelf: 'center'}} component={Paper}>
+                <TableContainer sx={{ width: '80%', alignSelf: 'center' }} component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -80,7 +102,7 @@ export const CardControleDeEstoque = () => {
                                     <TableCell align="center">{row.nome}</TableCell>
                                     <TableCell align="center">{row.valor}</TableCell>
                                     <TableCell align="center">{row.quantidadeEstoque}</TableCell>
-                                    <TableCell align="center"><EditIcon/> / <DeleteIcon/> </TableCell>
+                                    <TableCell align="center"><EditIcon onClick={() => {handleClickEditar(row)}} /> / <DeleteIcon onClick={() => {handleClickDeletar(row.id)}} /> </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -101,7 +123,7 @@ export const CardControleDeEstoque = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose}/>
+            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null} />
         </Box>
     )
 }

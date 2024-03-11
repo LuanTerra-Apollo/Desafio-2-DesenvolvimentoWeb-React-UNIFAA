@@ -16,7 +16,7 @@ const style = {
   p: 4,
 };
 
-export const ModalAdicionarEditar = ({isOpen, onClose}) => {
+export const ModalAdicionarEditar = ({isOpen, onClose, isEditing, produto}) => {
 
   return (
     <div>
