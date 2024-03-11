@@ -1,24 +1,47 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Typography } from "@mui/material"
 import {ModalAdicionarEditar} from "../modal-adicionar-editar/ModalAdicionarEditar";
-import React from "react";
-
+import { useEffect, useState } from "react";
+import { ProdutosService } from "../../services/api";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 export const CardControleDeEstoque = () => {
 
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [rows, setRows] = useState([])
+    
 
-    function createData(name, calories, fat, carbs, protein) {
-        return { name, calories, fat, carbs, protein };
+    useEffect(() => {
+        setIsLoading(true)
+        ProdutosService.obterProdutosDaAPI().then((response) => {
+            if (response instanceof Error) {
+                alert(result.message);
+            } else {
+                setIsLoading(false);
+                setRows(response.data)
+            }
+        })
+    }, []);
+
+    const handleClickOpen = () => {
+        setIsOpen(true);
     }
     
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
+    const handleClose = () => {
+        setIsOpen(false);
+        setIsLoading(true)
+        ProdutosService.obterProdutosDaAPI().then((response) => {
+            if (response instanceof Error) {
+                alert(result.message);
+            } else {
+                setIsLoading(false);
+                setRows(response.data)
+            }
+        })
+    }
+
 
     return (
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -26,7 +49,7 @@ export const CardControleDeEstoque = () => {
                 <Typography variant="h1" fontWeight='bold' sx={{ fontSize: '24px', textAlign: 'center' }}>
                     Controle de Estoque
                 </Typography>
-                <Button onClick={() => setIsOpen(true)} color='secondary' variant="contained" sx={{ color: 'black' }}>Adicionar</Button>
+                <Button onClick={handleClickOpen} color='secondary' variant="contained" sx={{ color: 'black' }}>Adicionar</Button>
             </Box>
             <Paper sx={{
                 display: 'flex', flexDirection: 'column', justifyContent:'center', width: '80%', maxWidth: '80%', height: '80%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
@@ -46,25 +69,39 @@ export const CardControleDeEstoque = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => (
+                            {Array.isArray(rows) && rows.length > 0 && rows.map((row) => (
                                 <TableRow
-                                    key={row.name}
+                                    key={row.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell align="center" component="th" scope="row">
-                                        {row.name}
+                                        {row.id}
                                     </TableCell>
-                                    <TableCell align="center">{row.calories}</TableCell>
-                                    <TableCell align="center">{row.fat}</TableCell>
-                                    <TableCell align="center">{row.carbs}</TableCell>
-                                    <TableCell align="center">{row.protein}</TableCell>
+                                    <TableCell align="center">{row.nome}</TableCell>
+                                    <TableCell align="center">{row.valor}</TableCell>
+                                    <TableCell align="center">{row.quantidadeEstoque}</TableCell>
+                                    <TableCell align="center"><EditIcon/> / <DeleteIcon/> </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
+
+                        {Array.isArray(rows) && rows.length == 0 && !isLoading && (
+                            <caption>Nenhum registro encontrado.</caption>
+                        )}
+
+                        <TableFooter>
+                            {isLoading && (
+                                <TableRow>
+                                    <TableCell colSpan={5}>
+                                        <LinearProgress variant="indeterminate" />
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableFooter>
                     </Table>
                 </TableContainer>
             </Paper>
-            <ModalAdicionarEditar isOpen={isOpen} onClose={() => setIsOpen(false)}/>
+            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose}/>
         </Box>
     )
 }
