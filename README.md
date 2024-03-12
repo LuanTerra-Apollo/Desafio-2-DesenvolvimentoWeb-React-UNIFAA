@@ -1,4 +1,4 @@
-# Desafio-2-DesenvolvimentoWeb-React-UNIFAA
+# Virgo Modas | Desafio 2
 
 <h4 align="center"> 
     :construction:  Projeto em construção  :construction:
