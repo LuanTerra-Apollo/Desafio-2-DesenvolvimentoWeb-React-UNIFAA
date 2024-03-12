@@ -27,6 +27,7 @@ export const CardControleDeEstoque = () => {
     const handleClickAdicionar = () => {
         setIsEditing(false)
         setIsOpen(true)
+        console.log(isOpen)
     }
 
     const handleClickEditar = (produto) => {
@@ -64,6 +65,13 @@ export const CardControleDeEstoque = () => {
         })
     }
 
+    const formatarValor = (valor) => {
+    
+        const valorNumber = Number(valor);
+
+        return `R$ ${valorNumber.toFixed(2).replace('.', ',')}`;
+    }
+
 
     return (
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -74,7 +82,7 @@ export const CardControleDeEstoque = () => {
                 <Button onClick={handleClickAdicionar} color='secondary' variant="contained" sx={{ color: 'black' }}>Adicionar</Button>
             </Box>
             <Paper sx={{
-                display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '80%', maxWidth: '80%', height: '80%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
+                display: 'flex', flexDirection: 'column', paddingTop: '20px', width: '80%', maxWidth: '80%', height: '80%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
                 borderRadius: '5px',
                 backgroundColor: '#4D3B00'
             }} elevation={3}>
@@ -100,8 +108,8 @@ export const CardControleDeEstoque = () => {
                                         {row.id}
                                     </TableCell>
                                     <TableCell align="center">{row.nome}</TableCell>
-                                    <TableCell align="center">{row.valor}</TableCell>
                                     <TableCell align="center">{row.quantidadeEstoque}</TableCell>
+                                    <TableCell align="center">{formatarValor(row.valor)}</TableCell>
                                     <TableCell align="center"><EditIcon onClick={() => {handleClickEditar(row)}} /> / <DeleteIcon onClick={() => {handleClickDeletar(row.id)}} /> </TableCell>
                                 </TableRow>
                             ))}
@@ -123,7 +131,7 @@ export const CardControleDeEstoque = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null} />
+            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null}/>
         </Box>
     )
 }
