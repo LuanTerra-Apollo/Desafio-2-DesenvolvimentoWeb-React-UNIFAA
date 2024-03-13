@@ -27,10 +27,6 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
   const [alert, setAlert] = useState({ message: '', severity: 'info' });
 
   useEffect(() => {
-    console.log(isOpen);
-  }, [isOpen])
-
-  useEffect(() => {
     if (isEditing) {
       setIdProduto(produto.id);
       setNomeProduto(produto.nome);
@@ -82,7 +78,6 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
             setAlert({ message: '', severity: 'info' });
           }, 3000)
         } else {
-          console.log("Consegui cadastrar!")
           setAlert({ message: 'O produto foi cadastrado com sucesso!', severity: 'success' });
           onClose();
           setTimeout(() => {

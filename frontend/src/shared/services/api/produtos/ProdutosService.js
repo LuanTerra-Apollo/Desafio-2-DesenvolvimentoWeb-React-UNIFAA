@@ -11,9 +11,9 @@ const obterProdutosDaAPI = async () => {
         }
 
         return new Error ('Erro ao listar os produtos')
-    } catch (error) {
-        console.log(error)
-        return new Error((error.message || 'Error ao listar os produtos'))
+    } catch (e) {
+        console.log(e)
+        return new Error((e.message || 'Error ao listar os produtos'))
     }
 }
 
@@ -26,9 +26,9 @@ const cadastrarProdutoNaAPI = async (info) => {
         }
 
         return new Error ('Erro ao cadastrar o produto')
-    } catch (error) {
-        console.log(error)
-        return new Error((error.message || 'Error ao cadastrar o produto'))
+    } catch (e) {
+        console.log(e)
+        return new Error((e.message || 'Error ao cadastrar o produto'))
     }
 }
 
@@ -41,9 +41,9 @@ const atualizarProdutoNaAPI = async (id, info) => {
         }
         
         return new Error ('Erro ao atualizar o produto')
-    } catch (err) {
-        console.log(err)
-        return new Error((err.message || 'Error ao atualizar o produto'))
+    } catch (e) {
+        console.log(e)
+        return new Error((e.message || 'Error ao atualizar o produto'))
     }
 }
 
@@ -57,9 +57,9 @@ const deletarProdutoNaAPI = async (id) => {
         
         return new Error ('Erro ao deletar o produto')
         
-    } catch (err) {
-        console.log(err)
-        return new Error((err.message || 'Error ao deletar o produto'))
+    } catch (e) {
+        console.log(e)
+        return new Error((e.message || 'Error ao deletar o produto'))
     }
 }
 

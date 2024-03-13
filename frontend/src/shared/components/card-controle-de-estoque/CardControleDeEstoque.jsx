@@ -22,14 +22,9 @@ export const CardControleDeEstoque = () => {
         handleAtualizarProdutosNaTabela();
     }, []);
 
-    useEffect(() => {
-        console.log(isEditing)
-    }, [isEditing])
-
     const handleClickAdicionar = () => {
         setIsEditing(false)
         setIsOpen(true)
-        console.log(isOpen)
     }
 
     const handleClickEditar = (produto) => {
