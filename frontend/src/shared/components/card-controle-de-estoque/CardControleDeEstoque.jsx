@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProdutosService } from "../../services/api";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Navigate } from "react-router-dom";
 
 
 export const CardControleDeEstoque = () => {
@@ -42,10 +43,16 @@ export const CardControleDeEstoque = () => {
         ProdutosService.deletarProdutoNaAPI(id).then((response) => {
             if (response instanceof Error) {
                 setAlert({message: `Ocorreu um erro ao deletar o produto de código ${id}`, severity: 'error'});
+                setTimeout(() => {
+                    setAlert({ message: '', severity: 'info' });
+                }, 3000)
             } else {
                 setIsLoading(false);
-                setAlert({message: `O produto com código ${id} foi deletado!`, severity: 'success'})
+                setAlert({message: `O produto com código ${id} foi deletado com sucesso!`, severity: 'success'})
                 handleAtualizarProdutosNaTabela()
+                setTimeout(() => {
+                    setAlert({ message: '', severity: 'info' });
+                }, 3000)
             }
         })
     }
@@ -59,7 +66,14 @@ export const CardControleDeEstoque = () => {
     const handleAtualizarProdutosNaTabela = () => {
         ProdutosService.obterProdutosDaAPI().then((response) => {
             if (response instanceof Error) {
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
+                    <Navigate to='/login' />
+                }
                 setAlert({message: 'Ocorreu um erro ao buscas a lista de produtos!', severity: 'error'});
+                setTimeout(() => {
+                    setAlert({ message: '', severity: 'info' });
+                }, 3000)
             } else {
                 setIsLoading(false);
                 setRows(response.data)

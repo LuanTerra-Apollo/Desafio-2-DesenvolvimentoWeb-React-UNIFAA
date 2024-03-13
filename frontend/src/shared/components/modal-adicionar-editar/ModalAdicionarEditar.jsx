@@ -24,7 +24,7 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
   const [nomeProduto, setNomeProduto] = useState('');
   const [valorProduto, setValorProduto] = useState('');
   const [quantidadeProduto, setQuantidadeProduto] = useState('');
-  const [ alert, setAlert ] = useState({ message: '', severity: 'info' });
+  const [alert, setAlert] = useState({ message: '', severity: 'info' });
 
   useEffect(() => {
     console.log(isOpen);
@@ -56,10 +56,16 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
 
       ProdutosService.atualizarProdutoNaAPI(produto.id, produto).then((response) => {
         if (response instanceof Error) {
-          setAlert({message: `Não foi possível atualizar o produto de código ${produto.id}`, severity:'error'});
+          setAlert({ message: `Não foi possível atualizar o produto de código ${produto.id}`, severity: 'error' });
+          setTimeout(() => {
+            setAlert({ message: '', severity: 'info' });
+          }, 3000)
         } else {
-          setAlert({message: 'O produto foi atualizado com sucesso!', severity: 'success'})
+          setAlert({ message: 'O produto foi atualizado com sucesso!', severity: 'success' })
           onClose();
+          setTimeout(() => {
+            setAlert({ message: '', severity: 'info' });
+          }, 3000)
         }
       })
     } else {
@@ -71,11 +77,17 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
 
       ProdutosService.cadastrarProdutoNaAPI(novoProduto).then((response) => {
         if (response instanceof Error) {
-          setAlert({message: 'Não foi possível cadastrar o produto', severity:'error'});
+          setAlert({ message: 'Não foi possível cadastrar o produto', severity: 'error' });
+          setTimeout(() => {
+            setAlert({ message: '', severity: 'info' });
+          }, 3000)
         } else {
           console.log("Consegui cadastrar!")
-          setAlert({message: 'O produto foi cadastrado com sucesso!', severity:'success'});
+          setAlert({ message: 'O produto foi cadastrado com sucesso!', severity: 'success' });
           onClose();
+          setTimeout(() => {
+            setAlert({ message: '', severity: 'info' });
+          }, 3000)
         }
       })
     }
