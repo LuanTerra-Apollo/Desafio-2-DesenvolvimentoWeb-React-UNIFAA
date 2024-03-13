@@ -11,7 +11,7 @@ const login = async (email, senha) => {
         return new Error ('Erro ao Logar')
     } catch (e) {
         console.log(e)
-        return new Error ((error.message || 'Erro ao Logar'))
+        return new Error ((e.message || 'Erro ao Logar'))
     }
 }
 

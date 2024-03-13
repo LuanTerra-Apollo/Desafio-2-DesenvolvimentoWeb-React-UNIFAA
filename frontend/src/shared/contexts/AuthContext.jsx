@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     const result = await AuthService.login(email, password);
     if (result instanceof Error) {
       console.log(result.message);
-      return alert("Não foi possível realizar o login, verifique as informações e tente novamente.");
+      return result;
     } else {
       localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.token));
       setAccessToken(result.token);

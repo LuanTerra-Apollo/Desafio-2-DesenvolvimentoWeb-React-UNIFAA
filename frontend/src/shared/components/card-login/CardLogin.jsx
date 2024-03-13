@@ -30,11 +30,11 @@ export const CardLogin = () => {
             return;
         }
         login(email, senha).then((result) => {
-            if (result && result.mensagem) {
-                setAlert({ message: 'Algo deu errado, tente novamente mais tarde!', severity: 'error' });
+            if (result instanceof Error) {
+                setAlert({ message: 'Não foi possível realizar o login, verifique as informações e tente novamente.', severity: 'error' });
                 console.log(result.message);
                 setIsLoading(false);
-                setTimeout(() => {
+                setTimeout(() => {  
                     setAlert({ message: '', severity: 'info' });
                 }, 3000);
             } else {

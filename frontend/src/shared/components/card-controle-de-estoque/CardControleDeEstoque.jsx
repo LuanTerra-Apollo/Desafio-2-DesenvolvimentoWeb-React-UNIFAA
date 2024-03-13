@@ -1,4 +1,4 @@
-import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Typography } from "@mui/material"
+import { Alert, Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Typography } from "@mui/material"
 import { ModalAdicionarEditar } from "../modal-adicionar-editar/ModalAdicionarEditar";
 import { useEffect, useState } from "react";
 import { ProdutosService } from "../../services/api";
@@ -13,6 +13,7 @@ export const CardControleDeEstoque = () => {
     const [editingProduct, setEditingProduct] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [rows, setRows] = useState([])
+    const [ alert, setAlert ] = useState({ message: '', severity: 'info' });
 
 
     useEffect(() => {
@@ -40,9 +41,10 @@ export const CardControleDeEstoque = () => {
         setIsLoading(true);
         ProdutosService.deletarProdutoNaAPI(id).then((response) => {
             if (response instanceof Error) {
-                alert(result.message);
+                setAlert({message: `Ocorreu um erro ao deletar o produto de código ${id}`, severity: 'error'});
             } else {
                 setIsLoading(false);
+                setAlert({message: `O produto com código ${id} foi deletado!`, severity: 'success'})
                 handleAtualizarProdutosNaTabela()
             }
         })
@@ -57,7 +59,7 @@ export const CardControleDeEstoque = () => {
     const handleAtualizarProdutosNaTabela = () => {
         ProdutosService.obterProdutosDaAPI().then((response) => {
             if (response instanceof Error) {
-                alert(result.message);
+                setAlert({message: 'Ocorreu um erro ao buscas a lista de produtos!', severity: 'error'});
             } else {
                 setIsLoading(false);
                 setRows(response.data)
@@ -132,6 +134,11 @@ export const CardControleDeEstoque = () => {
                 </TableContainer>
             </Paper>
             <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null}/>
+            {alert.message && (
+                <Alert sx={{position: 'fixed', top: '10px', zIndex: '2000', alignSelf:'center'}} severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            )}
         </Box>
     )
 }

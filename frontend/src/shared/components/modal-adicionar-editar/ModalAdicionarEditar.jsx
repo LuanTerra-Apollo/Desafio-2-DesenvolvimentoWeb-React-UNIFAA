@@ -24,6 +24,7 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
   const [nomeProduto, setNomeProduto] = useState('');
   const [valorProduto, setValorProduto] = useState('');
   const [quantidadeProduto, setQuantidadeProduto] = useState('');
+  const [ alert, setAlert ] = useState({ message: '', severity: 'info' });
 
   useEffect(() => {
     console.log(isOpen);
@@ -41,7 +42,7 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
       setValorProduto('');
       setQuantidadeProduto('');
     }
-  },[isEditing]);
+  }, [isEditing]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -55,9 +56,9 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
 
       ProdutosService.atualizarProdutoNaAPI(produto.id, produto).then((response) => {
         if (response instanceof Error) {
-          alert(response.message);
+          setAlert({message: `Não foi possível atualizar o produto de código ${produto.id}`, severity:'error'});
         } else {
-          console.log("Consegui atualizar!")
+          setAlert({message: 'O produto foi atualizado com sucesso!', severity: 'success'})
           onClose();
         }
       })
@@ -70,9 +71,10 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
 
       ProdutosService.cadastrarProdutoNaAPI(novoProduto).then((response) => {
         if (response instanceof Error) {
-          alert(response.message);
+          setAlert({message: 'Não foi possível cadastrar o produto', severity:'error'});
         } else {
           console.log("Consegui cadastrar!")
+          setAlert({message: 'O produto foi cadastrado com sucesso!', severity:'success'});
           onClose();
         }
       })
@@ -87,7 +89,7 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
     return valorConvertido;
   }
 
-  
+
 
   return (
     <div>
@@ -190,6 +192,11 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
           </Box>
         </Box>
       </Modal>
+      {alert.message && (
+        <Alert sx={{ position: 'fixed', top: '10px', zIndex: '2000', alignSelf: 'center' }} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      )}
     </div>
   );
 }
