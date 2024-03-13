@@ -1,11 +1,10 @@
-import { Alert, Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Typography } from "@mui/material"
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Typography } from "@mui/material"
 import { ModalAdicionarEditar } from "../modal-adicionar-editar/ModalAdicionarEditar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ProdutosService } from "../../services/api";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Navigate } from "react-router-dom";
-
 
 export const CardControleDeEstoque = () => {
 
@@ -14,8 +13,9 @@ export const CardControleDeEstoque = () => {
     const [editingProduct, setEditingProduct] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [rows, setRows] = useState([])
-    const [ alert, setAlert ] = useState({ message: '', severity: 'info' });
-
+    const [alert, setAlert] = useState({ message: '', severity: 'info' });
+    const [isConfirmBoxOpen, setIsConfirmBoxOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState('');
 
     useEffect(() => {
         setIsLoading(true);
@@ -42,13 +42,13 @@ export const CardControleDeEstoque = () => {
         setIsLoading(true);
         ProdutosService.deletarProdutoNaAPI(id).then((response) => {
             if (response instanceof Error) {
-                setAlert({message: `Ocorreu um erro ao deletar o produto de código ${id}`, severity: 'error'});
+                setAlert({ message: `Ocorreu um erro ao deletar o produto de código ${id}`, severity: 'error' });
                 setTimeout(() => {
                     setAlert({ message: '', severity: 'info' });
                 }, 3000)
             } else {
                 setIsLoading(false);
-                setAlert({message: `O produto com código ${id} foi deletado com sucesso!`, severity: 'success'})
+                setAlert({ message: `O produto com código ${id} foi deletado com sucesso!`, severity: 'success' })
                 handleAtualizarProdutosNaTabela()
                 setTimeout(() => {
                     setAlert({ message: '', severity: 'info' });
@@ -63,6 +63,11 @@ export const CardControleDeEstoque = () => {
         handleAtualizarProdutosNaTabela();
     }
 
+    const handleOpenConfirmBox = (id) => {
+        setIsConfirmBoxOpen(true);
+        setProductToDelete(id);
+    }
+
     const handleAtualizarProdutosNaTabela = () => {
         ProdutosService.obterProdutosDaAPI().then((response) => {
             if (response instanceof Error) {
@@ -70,7 +75,7 @@ export const CardControleDeEstoque = () => {
                     localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
                     <Navigate to='/login' />
                 }
-                setAlert({message: 'Ocorreu um erro ao buscas a lista de produtos!', severity: 'error'});
+                setAlert({ message: 'Ocorreu um erro ao buscas a lista de produtos!', severity: 'error' });
                 setTimeout(() => {
                     setAlert({ message: '', severity: 'info' });
                 }, 3000)
@@ -82,7 +87,7 @@ export const CardControleDeEstoque = () => {
     }
 
     const formatarValor = (valor) => {
-    
+
         const valorNumber = Number(valor);
 
         return `R$ ${valorNumber.toFixed(2).replace('.', ',')}`;
@@ -126,7 +131,7 @@ export const CardControleDeEstoque = () => {
                                     <TableCell align="center">{row.nome}</TableCell>
                                     <TableCell align="center">{row.quantidadeEstoque}</TableCell>
                                     <TableCell align="center">{formatarValor(row.valor)}</TableCell>
-                                    <TableCell align="center"><EditIcon onClick={() => {handleClickEditar(row)}} /> / <DeleteIcon onClick={() => {handleClickDeletar(row.id)}} /> </TableCell>
+                                    <TableCell align="center"><EditIcon onClick={() => { handleClickEditar(row) }} /> / <DeleteIcon onClick={() => { handleOpenConfirmBox(row.id) }} /> </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -147,12 +152,37 @@ export const CardControleDeEstoque = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null}/>
+            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null} />
             {alert.message && (
-                <Alert sx={{position: 'fixed', top: '10px', zIndex: '2000', alignSelf:'center'}} severity={alert.severity}>
+                <Alert sx={{ position: 'fixed', top: '10px', zIndex: '2000', alignSelf: 'center' }} severity={alert.severity}>
                     {alert.message}
                 </Alert>
             )}
+                <Dialog
+                    open={isConfirmBoxOpen}
+                    onClose={() => { setIsConfirmBoxOpen(false)}}
+                    aria-labelledby="draggable-dialog-title"
+                >
+                    <DialogTitle id="draggable-dialog-title">
+                        Confirmação!
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Você deseja mesmo excluir o produto de código {productToDelete}?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button autoFocus onClick={() => {
+                            setIsConfirmBoxOpen(false);
+                        }}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={() => {
+                            handleClickDeletar(productToDelete);
+                            setIsConfirmBoxOpen(false);
+                        }}>Deletar</Button>
+                    </DialogActions>
+                </Dialog>
         </Box>
     )
 }

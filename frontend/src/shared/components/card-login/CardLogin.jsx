@@ -46,7 +46,7 @@ export const CardLogin = () => {
 
     return (
         <Paper sx={{
-            display: 'flex', flexDirection: 'column',width: '35%', maxWidth: '40%', height: '45%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
+            display: 'flex', flexDirection: 'column',width: '45%', paddingX: '10px', height: '45%', minHeight: '400px', alignSelf: 'center', justifySelf: 'center',
             borderRadius: '5px',
             backgroundColor: '#4D3B00'
         }} elevation={3}>
@@ -57,7 +57,7 @@ export const CardLogin = () => {
             <form onSubmit={handleLogar} style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center', justifyContent: 'center', alignItems:'center', gap: 5, width: '90%' }}>
                 <Box flex={1} display='flex' flexDirection='column' alignItems='center' justifyContent='center' gap={5} width='90%'>
                     <TextField
-                        sx={{ width: '70%', minWidth: '200px' }}
+                        sx={{ width: '70%' }}
                         label='Email'
                         variant="filled"
                         value={email}
@@ -67,7 +67,6 @@ export const CardLogin = () => {
                     <TextField
                         sx={{
                             width: '70%',
-                            minWidth: '200px',
                          }}
                         label='Senha'
                         type='password'

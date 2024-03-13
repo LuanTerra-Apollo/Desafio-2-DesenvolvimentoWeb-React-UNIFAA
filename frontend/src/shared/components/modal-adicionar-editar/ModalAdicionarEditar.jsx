@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Grid, Icon, TextField } from '@mui/material';
+import { Alert, Grid, Icon, TextField } from '@mui/material';
 import { ProdutosService } from '../../services/api';
 
 const style = {
