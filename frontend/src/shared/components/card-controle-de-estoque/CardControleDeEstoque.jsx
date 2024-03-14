@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { ProdutosService } from "../../services/api";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Navigate } from "react-router-dom";
 
 export const CardControleDeEstoque = () => {
 
@@ -66,10 +65,6 @@ export const CardControleDeEstoque = () => {
     const handleAtualizarProdutosNaTabela = () => {
         ProdutosService.obterProdutosDaAPI().then((response) => {
             if (response instanceof Error) {
-                if (response.status === 401 || response.status === 403) {
-                    localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
-                    <Navigate to='/login' />
-                }
                 setAlert({ message: 'Ocorreu um erro ao buscas a lista de produtos!', severity: 'error' });
                 setTimeout(() => {
                     setAlert({ message: '', severity: 'info' });
@@ -153,31 +148,31 @@ export const CardControleDeEstoque = () => {
                     {alert.message}
                 </Alert>
             )}
-                <Dialog
-                    open={isConfirmBoxOpen}
-                    onClose={() => { setIsConfirmBoxOpen(false)}}
-                    aria-labelledby="draggable-dialog-title"
-                >
-                    <DialogTitle id="draggable-dialog-title">
-                        Confirmação!
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Você deseja mesmo excluir o produto de código {productToDelete}?
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button autoFocus onClick={() => {
-                            setIsConfirmBoxOpen(false);
-                        }}>
-                            Cancelar
-                        </Button>
-                        <Button onClick={() => {
-                            handleClickDeletar(productToDelete);
-                            setIsConfirmBoxOpen(false);
-                        }}>Deletar</Button>
-                    </DialogActions>
-                </Dialog>
+            <Dialog
+                open={isConfirmBoxOpen}
+                onClose={() => { setIsConfirmBoxOpen(false) }}
+                aria-labelledby="draggable-dialog-title"
+            >
+                <DialogTitle id="draggable-dialog-title">
+                    Confirmação!
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Você deseja mesmo excluir o produto de código {productToDelete}?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={() => {
+                        setIsConfirmBoxOpen(false);
+                    }}>
+                        Cancelar
+                    </Button>
+                    <Button onClick={() => {
+                        handleClickDeletar(productToDelete);
+                        setIsConfirmBoxOpen(false);
+                    }}>Deletar</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }
