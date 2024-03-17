@@ -21,7 +21,9 @@
 - `Funcionalidade 3`: realizar o logout do usuário
 
 
-https://github.com/LuanTerra-Apollo/Desafio-1-DesenvolvimentoWeb-UNIFAA/assets/141447628/fbdc86d8-970a-495a-ad08-40fd8fb167d3
+https://github.com/LuanTerra-Apollo/VIRGO-MODAS-Desafio-2/assets/141447628/32a73a0c-50da-4da3-bcfe-e74b97b5795b
+
+
 
 
 # 📁 Acesso ao projeto
