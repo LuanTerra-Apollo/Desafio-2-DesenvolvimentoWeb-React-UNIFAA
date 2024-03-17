@@ -32,17 +32,18 @@ export const CardControleDeEstoque = () => {
         setEditingProduct(produto)
     }
 
-    const handleClickDeletar = (id) => {
+    const handleClickDeletar = (produto) => {
         setIsLoading(true);
-        ProdutosService.deletarProdutoNaAPI(id).then((response) => {
+        console.log(produto.id)
+        ProdutosService.deletarProdutoNaAPI(produto.id).then((response) => {
             if (response instanceof Error) {
-                setAlert({ message: `Ocorreu um erro ao deletar o produto de código ${id}`, severity: 'error' });
+                setAlert({ message: `Ocorreu um erro ao deletar o produto de código ${produto.id}`, severity: 'error' });
                 setTimeout(() => {
                     setAlert({ message: '', severity: 'info' });
                 }, 3000)
             } else {
                 setIsLoading(false);
-                setAlert({ message: `O produto com código ${id} foi deletado com sucesso!`, severity: 'success' })
+                setAlert({ message: `O produto com código ${produto.id} foi deletado com sucesso!`, severity: 'success' })
                 handleAtualizarProdutosNaTabela()
                 setTimeout(() => {
                     setAlert({ message: '', severity: 'info' });
@@ -57,9 +58,9 @@ export const CardControleDeEstoque = () => {
         handleAtualizarProdutosNaTabela();
     }
 
-    const handleOpenConfirmBox = (id) => {
+    const handleOpenConfirmBox = (produto) => {
         setIsConfirmBoxOpen(true);
-        setProductToDelete(id);
+        setProductToDelete(produto);
     }
 
     const handleAtualizarProdutosNaTabela = () => {
@@ -121,7 +122,7 @@ export const CardControleDeEstoque = () => {
                                     <TableCell align="center">{row.nome}</TableCell>
                                     <TableCell align="center">{row.quantidadeEstoque}</TableCell>
                                     <TableCell align="center">{formatarValor(row.valor)}</TableCell>
-                                    <TableCell align="center"><EditIcon onClick={() => { handleClickEditar(row) }} /> / <DeleteIcon onClick={() => { handleOpenConfirmBox(row.id) }} /> </TableCell>
+                                    <TableCell align="center"><EditIcon onClick={() => { handleClickEditar(row) }} /> / <DeleteIcon onClick={() => { handleOpenConfirmBox(row) }} /> </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -142,7 +143,7 @@ export const CardControleDeEstoque = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null} />
+            <ModalAdicionarEditar isOpen={isOpen} onClose={handleClose} isEditing={isEditing} produto={isEditing ? editingProduct : null} setAlert={setAlert} atualizarProdutoNaAPI={handleAtualizarProdutosNaTabela} />
             {alert.message && (
                 <Alert sx={{ position: 'fixed', top: '10px', zIndex: '2000', alignSelf: 'center' }} severity={alert.severity}>
                     {alert.message}
@@ -158,7 +159,7 @@ export const CardControleDeEstoque = () => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Você deseja mesmo excluir o produto de código {productToDelete}?
+                        Você deseja mesmo excluir o produto {productToDelete.nome} de código {productToDelete.id}?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

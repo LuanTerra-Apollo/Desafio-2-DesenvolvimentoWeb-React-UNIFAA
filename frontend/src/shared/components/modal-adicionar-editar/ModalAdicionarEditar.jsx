@@ -18,13 +18,12 @@ const style = {
   p: 4,
 };
 
-export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) => {
+export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto, setAlert, atualizarProdutoNaAPI }) => {
 
   const [idProduto, setIdProduto] = useState('');
   const [nomeProduto, setNomeProduto] = useState('');
   const [valorProduto, setValorProduto] = useState('');
   const [quantidadeProduto, setQuantidadeProduto] = useState('');
-  const [alert, setAlert] = useState({ message: '', severity: 'info' });
 
   useEffect(() => {
     if (isEditing) {
@@ -52,11 +51,13 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
 
       ProdutosService.atualizarProdutoNaAPI(produto.id, produto).then((response) => {
         if (response instanceof Error) {
+          limparFormulario();
           setAlert({ message: `Não foi possível atualizar o produto de código ${produto.id}`, severity: 'error' });
           setTimeout(() => {
             setAlert({ message: '', severity: 'info' });
           }, 3000)
         } else {
+          limparFormulario();
           setAlert({ message: 'O produto foi atualizado com sucesso!', severity: 'success' })
           onClose();
           setTimeout(() => {
@@ -73,13 +74,15 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
 
       ProdutosService.cadastrarProdutoNaAPI(novoProduto).then((response) => {
         if (response instanceof Error) {
+          limparFormulario();
           setAlert({ message: 'Não foi possível cadastrar o produto', severity: 'error' });
           setTimeout(() => {
             setAlert({ message: '', severity: 'info' });
           }, 3000)
         } else {
+          limparFormulario();
+          atualizarProdutoNaAPI();
           setAlert({ message: 'O produto foi cadastrado com sucesso!', severity: 'success' });
-          onClose();
           setTimeout(() => {
             setAlert({ message: '', severity: 'info' });
           }, 3000)
@@ -94,6 +97,13 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
     const valorConvertido = valorString.replace(/,/g, ".");
 
     return valorConvertido;
+  }
+
+  const limparFormulario = () => {
+    setIdProduto('');
+    setNomeProduto('');
+    setValorProduto('');
+    setQuantidadeProduto('');
   }
 
 
@@ -200,7 +210,7 @@ export const ModalAdicionarEditar = ({ isOpen, onClose, isEditing, produto }) =>
         </Box>
       </Modal>
       {alert.message && (
-        <Alert sx={{ position: 'fixed', top: '10px', zIndex: '2000', alignSelf: 'center' }} severity={alert.severity}>
+        <Alert sx={{ position: 'absolute', top: '10px', zIndex: '2000' }} severity={alert.severity}>
           {alert.message}
         </Alert>
       )}

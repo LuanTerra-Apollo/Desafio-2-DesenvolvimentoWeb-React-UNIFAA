@@ -63,6 +63,7 @@ export const CardLogin = () => {
                         value={email}
                         disable={isLoading ? 'true' : 'undefined'}
                         onChange={e => setEmail(e.target.value)}
+                        inputProps={{style: { color: '#C19400' }}}
                     />
                     <TextField
                         sx={{
@@ -73,6 +74,7 @@ export const CardLogin = () => {
                         value={senha}
                         disable={isLoading ? 'true' : 'undefined'}
                         onChange={e => setSenha(e.target.value)}
+                        inputProps={{style: { color: '#C19400' }}}
                     />
                     <Button
                         type="submit"
